@@ -12,7 +12,10 @@ public class Chatserver implements IChatserverCli, Runnable {
 	private Config config;
 	private InputStream userRequestStream;
 	private PrintStream userResponseStream;
+    
+    // DATA
 
+    private ChatServerSocketRunnable tcpServ;
 	/**
 	 * @param componentName
 	 *            the name of the component - represented in the prompt
@@ -29,13 +32,21 @@ public class Chatserver implements IChatserverCli, Runnable {
 		this.config = config;
 		this.userRequestStream = userRequestStream;
 		this.userResponseStream = userResponseStream;
-
-		// TODO
+        
+        tcpServ = new ChatServerSocketRunnable(config.getInt("tcp.port"));
+        Thread servThread = new Thread(this);
+        this.run();
 	}
 
 	@Override
 	public void run() {
-		// TODO
+        try{
+		    Thread tcpServThread = new Thread(tcpServ);
+            tcpServThread.start();
+            tcpServThread.join();
+        }catch(Exception e){
+            System.out.println("ERROR");
+        }
 	}
 
 	@Override
