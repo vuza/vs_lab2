@@ -10,5 +10,5 @@ alice.vienna.at:	!list
 chatserver:			!users
 >					verify(".*alice.*online.*bill.*offline.*", T(test.util.Flag).REGEX)
 
-chatserver: 		!exit
 alice.vienna.at:	!exit
+chatserver: 		!exit
