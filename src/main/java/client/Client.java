@@ -7,6 +7,15 @@ import java.io.*;
 import java.net.*;
 import util.Config;
 import cli.*;
+import org.bouncycastle.util.encoders.Base64;
+
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.security.InvalidKeyException;
+import java.security.Key;
+import java.security.NoSuchAlgorithmException;
+import javax.crypto.Mac;
+import javax.crypto.spec.SecretKeySpec;
 
 public class Client implements IClientCli, Runnable {
 
@@ -131,16 +140,47 @@ public class Client implements IClientCli, Runnable {
     @Command
 	@Override
 	public String msg(String username, String message) throws IOException {
+        //Message Integrity
+        String hmac;
+        try {
+            //Create sha256_HMAC instance
+            Mac sha256_HMAC = Mac.getInstance("HmacSHA256");
+
+            //Read secret key from file and create SecretKeySpec
+            Key secretKey = new SecretKeySpec(readFile(config.getString("hmac.key")).getBytes("UTF-8"), "HmacSHA256");
+
+            //Init sha256_HMAC with our key
+            sha256_HMAC.init(secretKey);
+
+            //Encrypt sha256_HMAC with our message
+            sha256_HMAC.update(message.getBytes());
+
+            hmac = new String(Base64.encode(sha256_HMAC.doFinal()));
+        } catch (NoSuchAlgorithmException e) {
+            e.printStackTrace();
+            return "Error sending Message";
+        } catch (InvalidKeyException e) {
+            e.printStackTrace();
+            return "Error sending Message";
+        }
+
         String addr =tcpRespond("!lookup "+username);
         try{
             String[] addrsplit = addr.split(":");
             Socket usrSock = new Socket(addrsplit[0],Integer.parseInt(addrsplit[1]));
             BufferedReader usrIn = new BufferedReader(new InputStreamReader(usrSock.getInputStream()));
             PrintWriter usrOut = new PrintWriter(usrSock.getOutputStream(),true);
-            usrOut.print(message + "\n");
+            usrOut.print(hmac + " " + message + "\n");
             usrOut.flush();
             String res = usrIn.readLine();
             usrSock.close();
+
+            System.out.println(res);
+
+            String[] resSplit = res.split(" ");
+            if(resSplit.length >= 2 && resSplit[1].equals("!tampered"))
+                return "Message got tampered!";
+
             return res;
         }catch(Exception e){
             return "Error sending Message";
@@ -188,6 +228,17 @@ public class Client implements IClientCli, Runnable {
             this.pmListener=null;
         }
         this.clientThread.interrupt();
+    }
+
+    /**
+     * Reads all content from a file
+     * @param path to read content from
+     * @return Filecontent from @path
+     * @throws IOException if file not readable
+     */
+    static String readFile(String path) throws IOException {
+        byte[] encoded = Files.readAllBytes(Paths.get(path));
+        return new String(encoded, "UTF-8");
     }
 
 	/**
