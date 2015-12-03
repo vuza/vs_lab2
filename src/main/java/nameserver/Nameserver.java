@@ -134,13 +134,19 @@ public class Nameserver implements INameserverCli, INameserver, Runnable {
 	@Command
 	@Override
 	public String addresses() throws IOException {
-
-		return null;
+		SortedSet<String> keys = new TreeSet<String>(users.keySet());
+		String addresses = "";
+		int i = 1;
+		for (String key : keys) {
+			addresses += i + ". " + key + " " + users.get(key) + "\n";
+			i++;
+		}
+		return addresses;
 	}
 
 	@Override
 	public String exit() throws IOException {
-
+		//TODO
 		return null;
 	}
 
@@ -210,14 +216,39 @@ public class Nameserver implements INameserverCli, INameserver, Runnable {
 		}
 	}
 
+	/**
+	 * checks if requested zone is on this nameserver as a child
+	 * @param zone the domain string of the zone
+	 * @return the nameserver of the requested zone
+	 * @throws RemoteException
+	 * @throws InvalidDomainException
+     */
 	@Override
-	public INameserverForChatserver getNameserver(String zone) throws RemoteException {
-		return null;
+	public INameserverForChatserver getNameserver(String zone) throws RemoteException, InvalidDomainException {
+		if(children.containsKey(zone)){
+			return children.get(zone);
+		}else
+			throw new InvalidDomainException("The requested zone: " + zone + " does not exist");
 	}
 
+	/**
+	 * checks if the user is on this nameserver and returns the address
+	 * @param username
+	 * @return String of the private address of the user
+	 * @throws RemoteException
+     */
 	@Override
 	public String lookup(String username) throws RemoteException {
-		return null;
+		if(users.containsKey(username))
+			return users.get(username);
+		else{
+			try {
+				shell.writeLine("The user \""+username + "\" is not yet registered.");
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+			return null;
+		}
 	}
 
 

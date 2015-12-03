@@ -18,7 +18,7 @@ public interface INameserverForChatserver extends Remote {
 			InvalidDomainException;
 
 	public INameserverForChatserver getNameserver(String zone)
-			throws RemoteException;
+			throws RemoteException, InvalidDomainException;
 
 	public String lookup(String username) throws RemoteException;
 
