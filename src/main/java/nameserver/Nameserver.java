@@ -145,8 +145,14 @@ public class Nameserver implements INameserverCli, INameserver, Runnable {
 	}
 
 	@Override
+	@Command
 	public String exit() throws IOException {
-		//TODO
+		shell.close();
+		UnicastRemoteObject.unexportObject(this, true);
+
+		if(registry != null)
+			UnicastRemoteObject.unexportObject(registry, true);
+
 		return null;
 	}
 
