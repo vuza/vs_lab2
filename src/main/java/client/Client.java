@@ -174,9 +174,6 @@ public class Client implements IClientCli, Runnable {
             usrOut.flush();
             String res = usrIn.readLine();
             usrSock.close();
-
-            System.out.println(res);
-
             String[] resSplit = res.split(" ");
             if(resSplit.length >= 2 && resSplit[1].equals("!tampered"))
                 return "Message got tampered!";
