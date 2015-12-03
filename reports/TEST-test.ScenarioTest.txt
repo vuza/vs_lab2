@@ -1,35 +1,26 @@
 Testsuite: test.ScenarioTest
-Tests run: 2, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 9.716 sec
+Tests run: 2, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 9.787 sec
 ------------- Standard Output ---------------
 00_login_test.txt
 ################################################################################
 01_msg_test.txt
-00:33:37.608		alice.vienna.at> !login alice.vienna.at 12345
-00:33:37.617		alice.vienna.at: Successfully logged in
-00:33:38.155		bill.de> !login bill.de 23456
-00:33:38.157		bill.de: Successfully logged in
-00:33:38.658		bill.de> !register localhost:3007
-00:33:38.663		bill.de: Successfully regisered for bill.de
-00:33:39.159		alice.vienna.at> !msg bill.de hi
-00:33:39.335		bill.de: hij
-QPtD7QdJ3pwZc/stISfFWlMSNIY22FONGd/YBkbkQhU= !tampered hij
-00:33:39.336		alice.vienna.at: Message got tampered!
-00:33:39.670		bill.de> !exit
-00:33:39.673		bill.de: Logged out
-00:33:40.171		alice.vienna.at> !exit
-00:33:40.172		alice.vienna.at: Logged out
-00:33:40.671		chatserver> !exit
-00:33:40.673		chatserver: Exited
+16:11:38.794		alice.vienna.at> !login alice.vienna.at 12345
+16:11:38.807		alice.vienna.at: Successfully logged in
+16:11:39.389		bill.de> !login bill.de 23456
+16:11:39.391		bill.de: Successfully logged in
+16:11:39.892		bill.de> !register localhost:3007
+16:11:39.898		bill.de: Successfully regisered for bill.de
+16:11:40.395		alice.vienna.at> !msg bill.de hi ALSKJFALSDKJF kljd
+16:11:40.609		bill.de: hi ALSKJFALSDKJF kljd
+16:11:40.610		alice.vienna.at: !ack
+16:11:40.898		bill.de> !exit
+16:11:40.899		bill.de: Logged out
+16:11:41.398		alice.vienna.at> !exit
+16:11:41.400		alice.vienna.at: Logged out
+16:11:41.899		chatserver> !exit
+16:11:41.901		chatserver: Exited
 ################################################################################
 ------------- ---------------- ---------------
-------------- Standard Error -----------------
-AssertionError: String must contain '!ack' but was:
-00:33:39.159		alice.vienna.at> !msg bill.de hi
-00:33:39.336		alice.vienna.at: message got tampered!
-Expected: a string containing "!ack"
-     but: was "00:33:39.159		alice.vienna.at> !msg bill.de hi
-00:33:39.336		alice.vienna.at: message got tampered!"
-------------- ---------------- ---------------
 
-Testcase: 00_login_test took 0.01 sec
-Testcase: 01_msg_test took 9.689 sec
+Testcase: 00_login_test took 0.009 sec
+Testcase: 01_msg_test took 9.751 sec

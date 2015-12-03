@@ -42,10 +42,11 @@ public class ClientPrivateListener implements Runnable{
                 PrintWriter msgOut = new PrintWriter(s.getOutputStream(), true);
 
                 String req = msgIn.readLine();
-                String msg = req.split(" ")[1];
-
                 //Message Integrity
                 String hmac = req.split(" ")[0];
+
+                String msg = req.substring(hmac.length() + 1);
+
                 String computedHash = "";
                 try {
                     //Create sha256_HMAC instance

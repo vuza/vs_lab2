@@ -14,7 +14,7 @@ bill.de:            !register localhost:3007
 >                   verify("Successfully")
 
 ## Test msg stuff
-alice.vienna.at:	!msg bill.de hi
+alice.vienna.at:	!msg bill.de hi ALSKJFALSDKJF kljd
 >                   verify("!ack")
 
 ## Log off and stop
