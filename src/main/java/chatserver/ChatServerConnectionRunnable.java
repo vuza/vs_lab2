@@ -5,34 +5,30 @@ import java.io.IOException;
 import java.io.PrintStream;
 import java.net.Socket;
 import java.io.*;
+import communication.*;
 
 public class ChatServerConnectionRunnable implements Runnable{
     private Socket _con;
     private ChatServerModel _model;
     private String _user;
     private boolean close=false;
-    private PrintWriter out;
+    private Channel clientChan;
 
     private boolean running = false;
 
     public ChatServerConnectionRunnable(Socket con, ChatServerModel model) throws IOException{
         this._con = con;    
         this._model = model;
-        this.out =  new PrintWriter(_con.getOutputStream(),true);
+        this.clientChan = new TCPChannel(_con);
     }
     
     @Override
     public void run(){
         try{
-            BufferedReader in = new BufferedReader(
-                         new InputStreamReader(_con.getInputStream()));
             String inp;
-            while((inp=in.readLine())!=null){
-                String res = respond(inp)+'\n';
-                synchronized(out){
-                    out.print(res);
-                    out.flush();
-                }
+            while((inp=clientChan.readLine())!=null){
+                String res = respond(inp);
+                clientChan.sendLine(res);
                 if (inp.equals("!logout")&&(_user!=null)&&close){
                     _con.close();
                     _user=null;
@@ -98,10 +94,9 @@ public class ChatServerConnectionRunnable implements Runnable{
 
     public void sendMessage(String user, String msg){
         if (_user != null && !_user.equals(user)){
-            synchronized(out){
-                out.print(user+": "+msg+"\n");
-                out.flush();
-            }
+            try{
+                clientChan.sendLine(msg);
+            }catch (IOException e) {}
         }
     }
 }

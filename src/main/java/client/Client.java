@@ -7,6 +7,7 @@ import java.io.*;
 import java.net.*;
 import util.Config;
 import cli.*;
+import communication.*;
 
 public class Client implements IClientCli, Runnable {
 
@@ -18,9 +19,8 @@ public class Client implements IClientCli, Runnable {
     private Socket clientSock;
     private Shell clientShell;
     private Thread clientThread;
-    private BufferedReader tcpIn;
-    private PrintWriter tcpOut;
     private Thread shellThread;
+    private Channel tcpChannel;
 
     private String lastMesg=null;
     private ClientPrivateListener pmListener;
@@ -54,8 +54,7 @@ public class Client implements IClientCli, Runnable {
             this.clientSock = new Socket(config.getString("chatserver.host"),
                         config.getInt("chatserver.tcp.port"));
 
-            this.tcpIn = new BufferedReader(new InputStreamReader(clientSock.getInputStream()));
-            this.tcpOut = new PrintWriter(clientSock.getOutputStream(),true);
+            this.tcpChannel = new TCPChannel(clientSock);
             this.clientThread.start();
             this.shellThread.start();
         }
@@ -67,9 +66,8 @@ public class Client implements IClientCli, Runnable {
 	@Override
 	public void run() {
         try{
-            String fromServ;
             while(!clientSock.isClosed()){
-                String res = tcpIn.readLine();
+                String res = tcpChannel.readLine();
                 if(!expectingResponse){
                     lastMesg = res;
                     clientShell.writeLine(res);
@@ -85,8 +83,7 @@ public class Client implements IClientCli, Runnable {
 
     private synchronized String tcpRespond(String command) throws IOException{
         if(!clientSock.isClosed()){
-            tcpOut.print(command+'\n');
-            tcpOut.flush();
+            tcpChannel.sendLine(command);
             expectingResponse=true;
             while(expectingResponse)Thread.yield();
             return response;
