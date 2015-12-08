@@ -30,6 +30,8 @@ public class AESChannel implements Channel{
             _ciph.init(Cipher.DECRYPT_MODE,_key,_param);
             
             res = _ciph.doFinal(res);
+        }catch(IOException e){
+            throw e;
         }catch(Exception e){
             
         }

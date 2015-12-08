@@ -21,8 +21,10 @@ public class TCPChannel implements Channel{
     }
 
     public byte[] readLineBytes() throws IOException{
-        if(soc.isClosed()) return ("Connection reset").getBytes(StandardCharsets.UTF_8);
-        return in.readLine().getBytes(StandardCharsets.UTF_8);
+        if(soc.isClosed()) throw new IOException("soc closed");
+        String res = in.readLine();
+        if(res == null) throw new IOException("empty response");
+        return res.getBytes(StandardCharsets.UTF_8);
     }
 
     public void sendLineBytes(byte[] line) throws IOException{

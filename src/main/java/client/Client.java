@@ -6,8 +6,15 @@ import java.io.PrintStream;
 import java.io.*;
 import java.net.*;
 import util.Config;
+import util.Keys;
 import cli.*;
 import communication.*;
+import org.bouncycastle.util.encoders.Base64;
+import java.security.*;
+import javax.crypto.*;
+import java.nio.charset.StandardCharsets;
+import javax.crypto.spec.SecretKeySpec;
+import javax.crypto.spec.IvParameterSpec;
 
 public class Client implements IClientCli, Runnable {
 
@@ -27,6 +34,7 @@ public class Client implements IClientCli, Runnable {
     private boolean expectingResponse=false;
 
     private String response= null;
+    private boolean authenticated = false;
 	/**
 	 * @param componentName
 	 *            the name of the component - represented in the prompt
@@ -55,8 +63,8 @@ public class Client implements IClientCli, Runnable {
                         config.getInt("chatserver.tcp.port"));
 
             this.tcpChannel = new TCPChannel(clientSock);
-            this.clientThread.start();
             this.shellThread.start();
+            this.clientThread.start();
         }
         catch(Exception e){
             System.out.println("Connection failed");
@@ -66,8 +74,10 @@ public class Client implements IClientCli, Runnable {
 	@Override
 	public void run() {
         try{
+            while(!authenticated) Thread.yield();
             while(!clientSock.isClosed()){
                 String res = tcpChannel.readLine();
+                
                 if(!expectingResponse){
                     lastMesg = res;
                     clientShell.writeLine(res);
@@ -82,6 +92,7 @@ public class Client implements IClientCli, Runnable {
 	}
 
     private synchronized String tcpRespond(String command) throws IOException{
+        if(!authenticated) return "Not authenticated";
         if(!clientSock.isClosed()){
             tcpChannel.sendLine(command);
             expectingResponse=true;
@@ -199,10 +210,61 @@ public class Client implements IClientCli, Runnable {
 	// --- Commands needed for Lab 2. Please note that you do not have to
 	// implement them for the first submission. ---
 
+    @Command
 	@Override
 	public String authenticate(String username) throws IOException {
-		// TODO Auto-generated method stub
-		return null;
+        try{
+            PublicKey serverKey = Keys.readPublicPEM(new File(config.getString("chatserver.key")));
+            PrivateKey secretKey = Keys.readPrivatePEM(
+                        new File(config.getString("keys.dir")+"/"+username+".pem"));
+
+            
+            
+            this.tcpChannel = new Base64Channel(tcpChannel);
+            Cipher rsa = Cipher.getInstance("RSA/NONE/OAEPWithSHA256AndMGF1Padding");
+
+            SecureRandom rand = new SecureRandom();
+            byte[] cliChall = new byte[32];
+            rand.nextBytes(cliChall);
+            cliChall = Base64.encode(cliChall);
+            String clientChallange = new String(cliChall, StandardCharsets.UTF_8);
+            String message = "!authenticate " + username + " " + clientChallange;
+        
+            rsa.init(Cipher.ENCRYPT_MODE,serverKey);
+        
+            tcpChannel.sendLineBytes(rsa.doFinal(message.getBytes(StandardCharsets.UTF_8)));
+            // 1st Message sent
+
+            rsa.init(Cipher.DECRYPT_MODE, secretKey);
+            
+            String incMessage = new String(rsa.doFinal(tcpChannel.readLineBytes()),
+                                    StandardCharsets.UTF_8);
+
+            String[] messageParts = incMessage.split(" ");
+            
+            if (messageParts.length != 5 || !incMessage.startsWith("!ok ")) 
+                    return "Error authenticating - RSA failed";
+
+            if (!(messageParts[1]).equals(clientChallange))
+                    return "Error authenticating - Client Challange failed\n"+incMessage+"\n"+message;
+
+            String servChall = messageParts[2];
+            
+            byte[] aeskeybytes = Base64.decode(messageParts[3].getBytes(StandardCharsets.UTF_8));
+            SecretKey aeskey = new SecretKeySpec(aeskeybytes, 0, aeskeybytes.length, "AES");
+
+            byte[] iv = Base64.decode(messageParts[4].getBytes(StandardCharsets.UTF_8));
+
+            this.tcpChannel = new AESChannel(tcpChannel, aeskey, new IvParameterSpec(iv));
+
+            tcpChannel.sendLine(servChall);
+             // send back server challange to finish handshake
+            authenticated = true;
+            return incMessage;
+        }catch(Exception e){
+
+        }
+		return "Error authenticating";
 	}
 
 }
