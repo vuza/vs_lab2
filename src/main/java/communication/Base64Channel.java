@@ -2,6 +2,8 @@ package communication;
 
 
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+
 import org.bouncycastle.util.encoders.Base64;
 
 public class Base64Channel implements Channel{
@@ -10,6 +12,14 @@ public class Base64Channel implements Channel{
 
     public Base64Channel(Channel superChan) throws IOException{
         this._supChan = superChan;
+    }
+
+    public String readLine() throws IOException{
+        return new String(readLineBytes(), StandardCharsets.UTF_8);
+    }
+
+    public void sendLine(String line) throws IOException{
+        sendLineBytes(line.getBytes(StandardCharsets.UTF_8));
     }
 
     public byte[] readLineBytes() throws IOException{

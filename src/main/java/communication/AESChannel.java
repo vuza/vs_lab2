@@ -22,6 +22,14 @@ public class AESChannel implements Channel{
             this._ciph = Cipher.getInstance("AES/CTR/NoPadding");
         }catch(Exception e) {}
     }
+
+    public String readLine() throws IOException{
+        return new String(readLineBytes(),StandardCharsets.UTF_8);
+    }
+
+    public void sendLine(String line) throws IOException{
+        sendLineBytes(line.getBytes(StandardCharsets.UTF_8));
+    }
     
     public byte[] readLineBytes() throws IOException{
         byte[] res= new byte[1];
