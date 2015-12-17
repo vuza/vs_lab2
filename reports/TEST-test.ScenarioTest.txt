@@ -1,0 +1,48 @@
+Testsuite: test.ScenarioTest
+Tests run: 2, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 9.742 sec
+------------- Standard Output ---------------
+00_login_test.txt
+################################################################################
+01_msg_test.txt
+13:22:03.174		alice.vienna.at> !login alice.vienna.at 12345
+13:22:03.178		alice.vienna.at: Not authenticated
+13:22:03.759		bill.de> !login bill.de 23456
+13:22:03.761		bill.de: Not authenticated
+13:22:04.274		bill.de> !register localhost:3007
+13:22:04.276		bill.de: Not authenticated
+13:22:04.774		alice.vienna.at> !msg bill.de hi ALSKJFALSDKJF kljd
+13:22:05.276		bill.de> !exit
+13:22:05.296		bill.de: Not authenticated
+13:22:05.298		alice.vienna.at: Error sending Message
+13:22:05.776		alice.vienna.at> !exit
+13:22:05.776		alice.vienna.at: Not authenticated
+13:22:06.276		chatserver> !exit
+13:22:06.277		chatserver: Exited
+################################################################################
+------------- ---------------- ---------------
+------------- Standard Error -----------------
+AssertionError: String must contain 'success' but was:
+13:22:03.174		alice.vienna.at> !login alice.vienna.at 12345
+13:22:03.178		alice.vienna.at: not authenticated
+Expected: a string containing "success"
+     but: was "13:22:03.174		alice.vienna.at> !login alice.vienna.at 12345
+13:22:03.178		alice.vienna.at: not authenticated"
+AssertionError: String must contain 'success' but was:
+13:22:03.759		bill.de> !login bill.de 23456
+13:22:03.761		bill.de: not authenticated
+Expected: a string containing "success"
+     but: was "13:22:03.759		bill.de> !login bill.de 23456
+13:22:03.761		bill.de: not authenticated"
+AssertionError: String must contain 'Successfully' but was:
+13:22:04.274		bill.de> !register localhost:3007
+13:22:04.276		bill.de: not authenticated
+Expected: a string containing "successfully"
+     but: was "13:22:04.274		bill.de> !register localhost:3007
+13:22:04.276		bill.de: not authenticated"
+AssertionError: String must contain '!ack' but was: '13:22:04.774		alice.vienna.at> !msg bill.de hi alskjfalsdkjf kljd'
+Expected: a string containing "!ack"
+     but: was "13:22:04.774		alice.vienna.at> !msg bill.de hi alskjfalsdkjf kljd"
+------------- ---------------- ---------------
+
+Testcase: 00_login_test took 0.008 sec
+Testcase: 01_msg_test took 9.721 sec

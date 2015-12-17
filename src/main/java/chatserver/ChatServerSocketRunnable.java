@@ -6,20 +6,23 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.List;
 import java.util.Vector;
+import util.Config;
 
 public class ChatServerSocketRunnable implements Runnable{
 
     private boolean _stopped = false;
     private ServerSocket servSoc;
     private int _port;
+    private Config _conf;
 
     private ExecutorService threadPool = Executors.newFixedThreadPool(10);
     private ChatServerModel model;
     private List<Socket> socs = new Vector<>();
 
-    public ChatServerSocketRunnable(int port, ChatServerModel model){
+    public ChatServerSocketRunnable(int port, ChatServerModel model,Config conf){
         this._port=port;
         this.model = model;
+        this._conf=conf;
     }
 
     @Override
@@ -35,7 +38,7 @@ public class ChatServerSocketRunnable implements Runnable{
             try{
                 incConnection = servSoc.accept();
                 socs.add(incConnection);
-                this.threadPool.execute(new ChatServerConnectionRunnable(incConnection,model));
+                this.threadPool.execute(new ChatServerConnectionRunnable(incConnection,model,_conf));
             }
             catch (Exception e){
                 if(!stopped()){

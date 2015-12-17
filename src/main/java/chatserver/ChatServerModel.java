@@ -55,6 +55,17 @@ public class ChatServerModel{
         }
     }
 
+    public synchronized boolean loginEncrypted(String uname){
+        if (!users.containsKey(uname)) return false;
+        ClientData uobj = users.get(uname);
+        if (!uobj.loggedin){
+            uobj.loggedin = true;
+            users.put(uname,uobj);
+            return true;
+        }
+        return false;
+    }
+
     public synchronized boolean logIn(String username, String passwd){
         if (!users.containsKey(username)) return false;
         ClientData uobj = users.get(username);

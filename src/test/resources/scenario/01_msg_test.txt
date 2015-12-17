@@ -1,0 +1,24 @@
+## Start and login
+
+*	Chatserver	chatserver
+*	Client		alice.vienna.at
+*	Client		bill.de
+
+alice.vienna.at:	!login alice.vienna.at 12345
+>					verify("success")
+
+bill.de:			!login bill.de 23456
+>					verify("success")
+
+bill.de:            !register localhost:3007
+>                   verify("Successfully")
+
+## Test msg stuff
+alice.vienna.at:	!msg bill.de hi ALSKJFALSDKJF kljd
+>                   verify("!ack")
+
+## Log off and stop
+
+bill.de:			!exit
+alice.vienna.at:	!exit
+chatserver: 		!exit
