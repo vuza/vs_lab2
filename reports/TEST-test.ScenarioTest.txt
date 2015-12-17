@@ -1,0 +1,26 @@
+Testsuite: test.ScenarioTest
+Tests run: 2, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 9.787 sec
+------------- Standard Output ---------------
+00_login_test.txt
+################################################################################
+01_msg_test.txt
+16:11:38.794		alice.vienna.at> !login alice.vienna.at 12345
+16:11:38.807		alice.vienna.at: Successfully logged in
+16:11:39.389		bill.de> !login bill.de 23456
+16:11:39.391		bill.de: Successfully logged in
+16:11:39.892		bill.de> !register localhost:3007
+16:11:39.898		bill.de: Successfully regisered for bill.de
+16:11:40.395		alice.vienna.at> !msg bill.de hi ALSKJFALSDKJF kljd
+16:11:40.609		bill.de: hi ALSKJFALSDKJF kljd
+16:11:40.610		alice.vienna.at: !ack
+16:11:40.898		bill.de> !exit
+16:11:40.899		bill.de: Logged out
+16:11:41.398		alice.vienna.at> !exit
+16:11:41.400		alice.vienna.at: Logged out
+16:11:41.899		chatserver> !exit
+16:11:41.901		chatserver: Exited
+################################################################################
+------------- ---------------- ---------------
+
+Testcase: 00_login_test took 0.009 sec
+Testcase: 01_msg_test took 9.751 sec
