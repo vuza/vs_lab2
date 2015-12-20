@@ -117,6 +117,7 @@ public class ChatServerModel{
         try {
             registry = LocateRegistry.getRegistry(chatserverConfig.getInt("registry.port"));
         } catch (RemoteException e) {
+            System.out.println("Exception kwe"); //DEBUG
             return false;
         }
 
@@ -127,16 +128,21 @@ public class ChatServerModel{
         try {
             ns = (INameserverForChatserver) registry.lookup(usernameParts[usernameParts.length - 1]);
         } catch (RemoteException e) {
+            System.out.println("Exception daf"); //DEBUG
             return false;
         } catch (NotBoundException e) {
+            System.out.println("Exception dse"); //DEBUG
             return false;
         }
 
         try {
             ns.registerUser(username, address);
         } catch (Exception e){
+            System.out.println("Exception hhd"); //DEBUG
             return false;
         }
+
+        System.out.println("Registered"); //DEBUG
 
         return true;
     }
