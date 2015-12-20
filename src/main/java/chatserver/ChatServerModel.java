@@ -132,7 +132,7 @@ public class ChatServerModel{
         //Get root ns
         INameserverForChatserver ns;
         try {
-            ns = (INameserverForChatserver) registry.lookup(usernameParts[usernameParts.length - 1]);
+            ns = (INameserverForChatserver) registry.lookup("root-nameserver");
         } catch (RemoteException e) {
             System.out.println("Exception daf"); //DEBUG
             return false;
