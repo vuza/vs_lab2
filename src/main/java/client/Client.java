@@ -183,7 +183,7 @@ public class Client implements IClientCli, Runnable {
 
             return res;
         }catch(Exception e){
-            return "Error sending Message, 3";
+            return "Error sending Message: " + e;
         }
 	}
 
