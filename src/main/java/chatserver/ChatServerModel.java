@@ -112,12 +112,14 @@ public class ChatServerModel{
     }
 
     public synchronized boolean register(String username, String address){
-        System.out.println(username + " " + address); //DEBUG
+        System.out.println("called with: " + username + " " + address); //DEBUG
 
         //Get registry
         Registry registry;
         try {
+            System.out.println("in try"); //DEBUG
             registry = LocateRegistry.getRegistry(chatserverConfig.getInt("registry.port"));
+            System.out.println("in try again"); //DEBUG
         } catch (RemoteException e) {
             System.out.println("Exception kwe"); //DEBUG
             return false;
