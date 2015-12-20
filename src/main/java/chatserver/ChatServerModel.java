@@ -166,6 +166,8 @@ public class ChatServerModel{
             return "No registry found";
         }
 
+        System.out.println("found registry"); //DEBUG
+
         String[] usernameParts = username.split(".");
 
         //Get root ns
@@ -178,6 +180,8 @@ public class ChatServerModel{
             return "No name sever found.";
         }
 
+        System.out.println("got root ns"); //DEBUG
+
         while(usernameParts.length > 1){
             try {
                 ns = ns.getNameserver(usernameParts[usernameParts.length - 1]);
@@ -186,6 +190,8 @@ public class ChatServerModel{
                 return "No name server found.";
             }
         }
+
+        System.out.println("found our ns"); //DEBUG
 
         try {
             return ns.lookup(usernameParts[0]);
