@@ -233,7 +233,9 @@ public class Nameserver implements INameserverCli, INameserver, Runnable {
      */
 	@Override
 	public INameserverForChatserver getNameserver(String zone) throws RemoteException, InvalidDomainException {
+		System.out.println("Get nameserver: " + zone); //DEBUG
 		if(children.containsKey(zone)){
+			System.out.println("Found nameserver: " + zone); //DEBUG
 			return children.get(zone);
 		}else
 			throw new InvalidDomainException("The requested zone: " + zone + " does not exist");

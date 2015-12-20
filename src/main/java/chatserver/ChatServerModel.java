@@ -188,7 +188,7 @@ public class ChatServerModel{
         }
 
         try {
-            return ns.lookup(username);
+            return ns.lookup(usernameParts[0]);
         } catch (RemoteException e) {
             return "User not found";
         }
