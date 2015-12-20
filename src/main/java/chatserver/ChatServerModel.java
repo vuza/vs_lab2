@@ -159,7 +159,7 @@ public class ChatServerModel{
         //Get registry
         Registry registry;
         try {
-            registry = LocateRegistry.getRegistry(chatserverConfig.getInt("registry.port"));
+            registry = LocateRegistry.getRegistry("root-nameserver");
         } catch (RemoteException e) {
             return "No registry found";
         }
