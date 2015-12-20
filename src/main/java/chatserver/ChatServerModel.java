@@ -182,8 +182,10 @@ public class ChatServerModel{
 
         System.out.println("got root ns"); //DEBUG
 
+        System.out.println("before: " + usernameParts.length); //DEBUG
         while(usernameParts.length > 1){
             try {
+                System.out.println("while: " + usernameParts.length); //DEBUG
                 ns = ns.getNameserver(usernameParts[usernameParts.length - 1]);
                 usernameParts = Arrays.copyOf(usernameParts, usernameParts.length-1);
             } catch (Exception e){
