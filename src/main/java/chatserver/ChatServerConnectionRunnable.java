@@ -144,12 +144,16 @@ public class ChatServerConnectionRunnable implements Runnable{
                 return "Not logged in.";
             }
         }else if(in.startsWith("!register")){
+            System.out.println("Received registered cmd"); //DEBUG
+
             String[] vals = in.split(" ");
             if(_user!= null){
+                System.out.println("User not null"); //DEBUG
                 if(vals.length!=2) return "Parameter Missmatch";
-                return _model.register(_user,vals[1]) ? "Successfully regisered for "+_user:
+                return _model.register(_user,vals[1]) ? "Successfully registered for "+_user:
                         "Register failed";
             }else{
+                System.out.println("Not logged in"); //DEBUG
                 return "Not logged in";
             }
         }else if(in.startsWith("!lookup")){
