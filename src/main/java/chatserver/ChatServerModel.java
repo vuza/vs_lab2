@@ -112,6 +112,8 @@ public class ChatServerModel{
     }
 
     public synchronized boolean register(String username, String address){
+        System.out.println(username + " " + address); //DEBUG
+
         //Get registry
         Registry registry;
         try {
@@ -120,6 +122,8 @@ public class ChatServerModel{
             System.out.println("Exception kwe"); //DEBUG
             return false;
         }
+
+        System.out.println("got registery"); //DEBUG
 
         String[] usernameParts = username.split(".");
 
@@ -134,6 +138,8 @@ public class ChatServerModel{
             System.out.println("Exception dse"); //DEBUG
             return false;
         }
+
+        System.out.println("got ns"); //DEBUG
 
         try {
             ns.registerUser(username, address);
