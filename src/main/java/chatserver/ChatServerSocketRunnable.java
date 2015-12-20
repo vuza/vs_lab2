@@ -19,10 +19,10 @@ public class ChatServerSocketRunnable implements Runnable{
     private ChatServerModel model;
     private List<Socket> socs = new Vector<>();
 
-    public ChatServerSocketRunnable(int port, ChatServerModel model,Config conf){
+    public ChatServerSocketRunnable(int port, ChatServerModel model){
         this._port=port;
         this.model = model;
-        this._conf=conf;
+        this._conf=model.chatserverConfig;
     }
 
     @Override
@@ -38,7 +38,7 @@ public class ChatServerSocketRunnable implements Runnable{
             try{
                 incConnection = servSoc.accept();
                 socs.add(incConnection);
-                this.threadPool.execute(new ChatServerConnectionRunnable(incConnection,model,_conf));
+                this.threadPool.execute(new ChatServerConnectionRunnable(incConnection,model));
             }
             catch (Exception e){
                 if(!stopped()){

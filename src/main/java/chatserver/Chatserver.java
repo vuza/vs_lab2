@@ -40,11 +40,11 @@ public class Chatserver implements IChatserverCli, Runnable {
 		this.userRequestStream = userRequestStream;
 		this.userResponseStream = userResponseStream;
         
-        this.servModel = new ChatServerModel(new Config("user"));
+        this.servModel = new ChatServerModel(new Config("user"), config);
         this.servShell = new Shell(componentName, userRequestStream, userResponseStream);
         
         servShell.register(this);
-        tcpServ = new ChatServerSocketRunnable(config.getInt("tcp.port"),servModel,config);
+        tcpServ = new ChatServerSocketRunnable(config.getInt("tcp.port"), servModel);
         try{
             udpSoc = new DatagramSocket(config.getInt("udp.port"));
         }catch(Exception e){

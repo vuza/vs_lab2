@@ -1,17 +1,20 @@
 package chatserver;
 
+import nameserver.INameserverForChatserver;
+import nameserver.exceptions.InvalidDomainException;
 import util.Config;
 
-import java.util.Set;
-import java.util.Map;
-import java.util.TreeMap;
-import java.util.List;
-import java.util.Vector;
+import java.rmi.NotBoundException;
+import java.rmi.RemoteException;
+import java.rmi.registry.LocateRegistry;
+import java.rmi.registry.Registry;
+import java.util.*;
 
 public class ChatServerModel{
     
     private List<ChatServerConnectionRunnable> clients = new Vector<>();
-    
+    protected Config chatserverConfig;
+
     class ClientData{
         boolean loggedin;
         String username;
@@ -28,7 +31,9 @@ public class ChatServerModel{
     private Map<String, ClientData> users = new TreeMap<>();
 
     // user config
-    public ChatServerModel(Config con){
+    public ChatServerModel(Config con, Config chatserverConfig){
+        this.chatserverConfig = chatserverConfig;
+
         Set<String> names = con.listKeys();
         for(String entry : names){
             String uname = entry.substring(0,entry.lastIndexOf('.'));
@@ -116,10 +121,40 @@ public class ChatServerModel{
     }
 
     public synchronized String lookup(String username){
-        if (!users.containsKey(username)) return "User not found";
-        ClientData uobj = users.get(username);
-        if(uobj.addr != null && uobj.registered)
-            return uobj.addr;
-        return "User not registered";
+        //Get registry
+        Registry registry;
+        try {
+            registry = LocateRegistry.getRegistry(chatserverConfig.getInt("registry.port"));
+        } catch (RemoteException e) {
+            return "No registry found";
+        }
+
+        String[] usernameParts = username.split(".");
+
+        //Get root ns
+        INameserverForChatserver ns;
+        try {
+            ns = (INameserverForChatserver) registry.lookup(usernameParts[usernameParts.length - 1]);
+            usernameParts = Arrays.copyOf(usernameParts, usernameParts.length-1);
+        } catch (RemoteException e) {
+            return "No name sever found.";
+        } catch (NotBoundException e) {
+            return "No name sever found.";
+        }
+
+        while(usernameParts.length > 1){
+            try {
+                ns = ns.getNameserver(usernameParts[usernameParts.length - 1]);
+                usernameParts = Arrays.copyOf(usernameParts, usernameParts.length-1);
+            } catch (Exception e){
+                return "No name server found.";
+            }
+        }
+
+        try {
+            return ns.lookup(username);
+        } catch (RemoteException e) {
+            return "User not found";
+        }
     }
 }

@@ -23,9 +23,9 @@ public class ChatServerConnectionRunnable implements Runnable{
 
     private boolean running = false;
 
-    public ChatServerConnectionRunnable(Socket con, ChatServerModel model, Config cf) throws IOException{
+    public ChatServerConnectionRunnable(Socket con, ChatServerModel model) throws IOException{
         this._con = con;    
-        this._conf = cf;
+        this._conf = model.chatserverConfig;
         this._model = model;
         this.clientChan = new Base64Channel(new TCPChannel(_con));
     }
