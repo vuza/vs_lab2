@@ -1,6 +1,7 @@
 package chatserver;
 
 import nameserver.INameserverForChatserver;
+import nameserver.exceptions.AlreadyRegisteredException;
 import nameserver.exceptions.InvalidDomainException;
 import util.Config;
 
@@ -111,12 +112,32 @@ public class ChatServerModel{
     }
 
     public synchronized boolean register(String username, String address){
-        if (!users.containsKey(username)) return false;
-        ClientData uobj = users.get(username);
-        if(uobj.addr != null) return false;
-        uobj.addr = address;
-        uobj.registered = true;
-        users.put(username,uobj);
+        //Get registry
+        Registry registry;
+        try {
+            registry = LocateRegistry.getRegistry(chatserverConfig.getInt("registry.port"));
+        } catch (RemoteException e) {
+            return false;
+        }
+
+        String[] usernameParts = username.split(".");
+
+        //Get root ns
+        INameserverForChatserver ns;
+        try {
+            ns = (INameserverForChatserver) registry.lookup(usernameParts[usernameParts.length - 1]);
+        } catch (RemoteException e) {
+            return false;
+        } catch (NotBoundException e) {
+            return false;
+        }
+
+        try {
+            ns.registerUser(username, address);
+        } catch (Exception e){
+            return false;
+        }
+
         return true;
     }
 
