@@ -156,10 +156,12 @@ public class ChatServerModel{
     }
 
     public synchronized String lookup(String username){
+        System.out.println("called with: " + username); //DEBUG
+
         //Get registry
         Registry registry;
         try {
-            registry = LocateRegistry.getRegistry("root-nameserver");
+            registry = LocateRegistry.getRegistry(chatserverConfig.getInt("registry.port"));
         } catch (RemoteException e) {
             return "No registry found";
         }
@@ -169,8 +171,7 @@ public class ChatServerModel{
         //Get root ns
         INameserverForChatserver ns;
         try {
-            ns = (INameserverForChatserver) registry.lookup(usernameParts[usernameParts.length - 1]);
-            usernameParts = Arrays.copyOf(usernameParts, usernameParts.length-1);
+            ns = (INameserverForChatserver) registry.lookup("root-nameserver");
         } catch (RemoteException e) {
             return "No name sever found.";
         } catch (NotBoundException e) {
