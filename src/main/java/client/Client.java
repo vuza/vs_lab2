@@ -161,10 +161,10 @@ public class Client implements IClientCli, Runnable {
             hmac = new String(Base64.encode(sha256_HMAC.doFinal()));
         } catch (NoSuchAlgorithmException e) {
             e.printStackTrace();
-            return "Error sending Message";
+            return "Error sending Message, NoSuchAlgorithmException";
         } catch (InvalidKeyException e) {
             e.printStackTrace();
-            return "Error sending Message";
+            return "Error sending Message, InvalidKeyException";
         }
 
         String addr =tcpRespond("!lookup "+username);
@@ -183,7 +183,7 @@ public class Client implements IClientCli, Runnable {
 
             return res;
         }catch(Exception e){
-            return "Error sending Message";
+            return "Error sending Message, 3";
         }
 	}
 
