@@ -210,14 +210,12 @@ public class Nameserver implements INameserverCli, INameserver, Runnable {
 			if(users.containsKey(username))
 				throw new AlreadyRegisteredException("The user " + username + " is already registered");
 			else {
-				System.out.println("Registered in NS (1)"); //DEBUG
 				users.put(username,address);
 			}
 		}else {
 			//In this case the request has to be delegated to next nameserver
 			String domain = splittedUsername[splittedUsername.length-1];
 			if(children.containsKey(domain)){
-				System.out.println("Registered in NS (2)"); //DEBUG
 				children.get(domain).registerUser(username.substring(0,username.length()-domain.length()-1),address);
 			}else
 				throw new InvalidDomainException("The domain "+ domain + " is not registered!");
@@ -233,9 +231,7 @@ public class Nameserver implements INameserverCli, INameserver, Runnable {
      */
 	@Override
 	public INameserverForChatserver getNameserver(String zone) throws RemoteException, InvalidDomainException {
-		System.out.println("Get nameserver: " + zone); //DEBUG
 		if(children.containsKey(zone)){
-			System.out.println("Found nameserver: " + zone); //DEBUG
 			return children.get(zone);
 		}else
 			throw new InvalidDomainException("The requested zone: " + zone + " does not exist");

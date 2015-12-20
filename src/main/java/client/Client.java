@@ -94,8 +94,6 @@ public class Client implements IClientCli, Runnable {
 	}
 
     private synchronized String tcpRespond(String command) throws IOException{
-        System.out.println(command); //DEBUG
-
         if(!authenticated) return "Not authenticated";
         if(!clientSock.isClosed()){
             tcpChannel.sendLine(command);
