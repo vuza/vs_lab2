@@ -127,7 +127,7 @@ public class ChatServerModel{
 
         System.out.println("got registery"); //DEBUG
 
-        String[] usernameParts = username.split(".");
+        String[] usernameParts = username.split("\\.");
 
         //Get root ns
         INameserverForChatserver ns;
@@ -168,7 +168,7 @@ public class ChatServerModel{
 
         System.out.println("found registry"); //DEBUG
 
-        String[] usernameParts = username.split(".");
+        String[] usernameParts = username.split("\\.");
 
         //Get root ns
         INameserverForChatserver ns;
