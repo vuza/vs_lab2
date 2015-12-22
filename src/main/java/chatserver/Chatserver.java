@@ -91,10 +91,11 @@ public class Chatserver implements IChatserverCli, Runnable {
     @Command
 	@Override
 	public String exit() throws IOException {
-        udpSoc.close();
+		if(udpSoc != null)
+        		udpSoc.close();
 		tcpServ.stop();
-        servShell.close();
-        return "Exited";
+        	servShell.close();
+        	return "Exited";
 	}
 
 	/**

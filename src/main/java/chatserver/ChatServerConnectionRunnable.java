@@ -33,11 +33,11 @@ public class ChatServerConnectionRunnable implements Runnable{
     @Override
     public void run(){
         if (!handshake()){
-           /* _model.removeClient(this);
+            _model.removeClient(this);
             try{
                 _con.close();
             }catch(Exception e){}
-            return; */
+            return; 
         }
         try{
 
@@ -120,14 +120,15 @@ public class ChatServerConnectionRunnable implements Runnable{
 
     private String respond(String in){
         if(in.startsWith("!login")){
-            String[] cred = in.split(" ");
+            /*String[] cred = in.split(" ");
             if(cred.length == 3 && _user==null&& _model.logIn(cred[1],cred[2])){
                 _model.addClient(this);
                 _user=cred[1];
                 return "Successfully logged in";
             }else{
                 return "Login failed";
-            }
+            }*/
+	    return "Depricated";
         }else if(in.equals("!logout")){
             if(_user!=null && _model.logout(_user)){
                 close = true;

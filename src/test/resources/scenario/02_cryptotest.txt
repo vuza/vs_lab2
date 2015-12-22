@@ -1,0 +1,17 @@
+## Start and login
+
+*	Chatserver	chatserver
+*	Client		alice.vienna.at
+*	Client		bill.de
+*	Client		malicious
+
+alice.vienna.at:	!authenticate alice.vienna.at
+
+bill.de:	!authenticate bill.de
+malicious:	!authenticate bill.de
+>verify("not authenticated")
+
+## Log off and stop
+alice.vienna.at:			!exit
+bill.de:	!exit
+chatserver: 		!exit
