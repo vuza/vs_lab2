@@ -287,7 +287,7 @@ public class Client implements IClientCli, Runnable {
                     return "Error authenticating - RSA failed";
 
             if (!(messageParts[1]).equals(clientChallange))
-                    return "Error authenticating - Client Challange failed\n"+incMessage+"\n"+message;
+                    return "Error authenticating - Client Challange failed";
 
             String servChall = messageParts[2];
 
@@ -301,7 +301,7 @@ public class Client implements IClientCli, Runnable {
             tcpChannel.sendLine(servChall);
              // send back server challange to finish handshake
             authenticated = true;
-            return incMessage;
+            return "Authenticated";
         }catch(Exception e){
 
         }
